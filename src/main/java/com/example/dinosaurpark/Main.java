@@ -1,10 +1,12 @@
 package com.example.dinosaurpark;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+import com.example.dinosaurpark.config.ParkConfig;
+import com.example.dinosaurpark.simulation.SimulationEngine;
 
 public class Main {
     public static void main(String[] args) {
         ParkConfig config = ParkConfig.getInstance();
-        new SimulationEngine(config).run();
+        SimulationEngine engine = new SimulationEngine(config);
+        engine.run();
     }
 }

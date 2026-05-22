@@ -21,4 +21,5 @@ public final class ParkConfig {
     public int    getTotalSteps() { ... }
 
     // Solo para tests — permite resetear la instancia entre tests
-    stati
+    static void resetForTesting() { instance = null; }
+}
