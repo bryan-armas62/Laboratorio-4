@@ -14,12 +14,11 @@ public final class ParkConfig {
     public static ParkConfig getInstance() { ... }
 
     // Métodos de lectura
-    public int getInt(String key, int defaultValue)    { ... }
+    public int    getInt   (String key, int defaultValue)    { ... }
     public double getDouble(String key, double defaultValue) { ... }
     public String getString(String key, String defaultValue) { ... }
-    public long getSeed() { ... }  // lee simulation.seed
-    public int getTotalSteps() { ... }
+    public long   getSeed  () { ... }  // lee simulation.seed
+    public int    getTotalSteps() { ... }
 
     // Solo para tests — permite resetear la instancia entre tests
-    static void resetForTesting() { instance = null; }
-}
+    stati

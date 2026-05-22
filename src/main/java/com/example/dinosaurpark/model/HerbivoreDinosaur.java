@@ -1,0 +1,13 @@
+package com.example.dinosaurpark.model;
+
+public class HerbivoreDinosaur extends Dinosaur {
+
+    public HerbivoreDinosaur(int id, String name, String species) {
+        super(id, name, species);
+    }
+
+    @Override
+    public double getDangerLevel() {
+        return 0.2;
+    }
+}
