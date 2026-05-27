@@ -13,7 +13,9 @@ public class DatabaseService {
         try {
 
             connection = DriverManager.getConnection(
-                    "jdbc:h2:./dinosaurparkdb"
+                    "jdbc:h2:./dinosaurparkdb",
+                    "sa",
+                    ""
             );
 
             createTables();
