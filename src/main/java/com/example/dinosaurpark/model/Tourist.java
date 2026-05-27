@@ -9,12 +9,14 @@ public class Tourist {
     private final String name;
     private TouristStatus status;
     private double moneySpent;
+
     private final List<String> visitedZones;
 
     public Tourist(int id, String name) {
         this.id = id;
         this.name = name;
         this.status = TouristStatus.WAITING;
+        this.moneySpent = 0;
         this.visitedZones = new ArrayList<>();
     }
 
@@ -22,7 +24,7 @@ public class Tourist {
         moneySpent += amount;
     }
 
-    public void visitZone(String zone) {
+    public void recordVisit(String zone) {
         visitedZones.add(zone);
     }
 

@@ -1,25 +1,26 @@
 package com.example.dinosaurpark.event;
 
+import com.example.dinosaurpark.model.Vehicle;
 import com.example.dinosaurpark.simulation.ParkState;
 
 import java.util.Random;
 
-public class BlackoutEvent implements SimulationEvent {
+public class VehicleFailureEvent implements SimulationEvent {
 
     private final double probability;
 
-    public BlackoutEvent(double probability) {
+    public VehicleFailureEvent(double probability) {
         this.probability = probability;
     }
 
     @Override
     public String getName() {
-        return "APAGON";
+        return "VEHICLE_FAILURE";
     }
 
     @Override
     public String getDescription() {
-        return "Massive blackout";
+        return "Vehicle broken";
     }
 
     @Override
@@ -30,9 +31,11 @@ public class BlackoutEvent implements SimulationEvent {
     @Override
     public void execute(ParkState state, Random rng) {
 
-        state.getPowerPlant().triggerFailure(
-                state.getDatabaseService()
+        Vehicle vehicle = state.getVehicles().get(
+                rng.nextInt(state.getVehicles().size())
         );
+
+        vehicle.fail();
 
         state.getDatabaseService().saveEvent(
                 getName(),

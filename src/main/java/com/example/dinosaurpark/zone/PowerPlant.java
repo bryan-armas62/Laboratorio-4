@@ -2,93 +2,53 @@ package com.example.dinosaurpark.zone;
 
 import java.util.Random;
 
+import com.example.dinosaurpark.model.Tourist;
+import com.example.dinosaurpark.persistence.DatabaseService;
+
 public class PowerPlant implements ParkZone {
 
     private double energy;
-    private final double maxEnergy;
+    private boolean operational;
+
     private final double consumptionPerStep;
     private final double failureProbability;
-    private boolean operational;
-    private int failures;
+    private final double repairCost;
 
     public PowerPlant(double initialEnergy,
                       double consumptionPerStep,
-                      double failureProbability) {
+                      double failureProbability,
+                      double repairCost) {
 
         this.energy = initialEnergy;
-        this.maxEnergy = initialEnergy;
         this.consumptionPerStep = consumptionPerStep;
         this.failureProbability = failureProbability;
+        this.repairCost = repairCost;
+
         this.operational = true;
-        this.failures = 0;
     }
 
-    @Override
-    public String getName() {
-        return "Power Plant";
-    }
-
-    public void tick(Random random) {
-
-        if (!operational) {
-            System.out.println("[POWER PLANT] System offline");
-            return;
-        }
-
-        consumeEnergy();
-
-        if (random.nextDouble() < failureProbability) {
-            shutdown();
-        }
-
-        if (energy <= 0) {
-            shutdown();
-        }
-    }
-
-    public void consumeEnergy() {
+    public void tick(Random rng, DatabaseService db) {
 
         energy -= consumptionPerStep;
 
-        if (energy < 0) {
-            energy = 0;
+        if (rng.nextDouble() < failureProbability) {
+            triggerFailure(db);
         }
     }
 
-    public void recharge(double amount) {
-
-        if (amount <= 0) {
-            return;
-        }
-
-        energy += amount;
-
-        if (energy > maxEnergy) {
-            energy = maxEnergy;
-        }
-    }
-
-    public void shutdown() {
+    public void triggerFailure(DatabaseService db) {
 
         operational = false;
-        failures++;
 
-        System.out.println("[POWER PLANT] FAILURE DETECTED");
+        db.saveExpense(
+                "BLACKOUT",
+                repairCost,
+                "PowerPlant failure"
+        );
     }
 
     public void repair() {
-
         operational = true;
-
-        if (energy <= 0) {
-            energy = maxEnergy * 0.5;
-        }
-
-        System.out.println("[POWER PLANT] SYSTEM REPAIRED");
-    }
-
-    public boolean hasEnoughEnergy(double required) {
-        return energy >= required;
     }
 
     public boolean isOperational() {
@@ -99,28 +59,31 @@ public class PowerPlant implements ParkZone {
         return energy;
     }
 
-    public double getMaxEnergy() {
-        return maxEnergy;
-    }
-
-    public double getConsumptionPerStep() {
-        return consumptionPerStep;
-    }
-
-    public double getFailureProbability() {
-        return failureProbability;
-    }
-
-    public int getFailures() {
-        return failures;
+    @Override
+    public String getName() {
+        return "PowerPlant";
     }
 
     @Override
-    public String toString() {
-        return "PowerPlant{" +
-                "energy=" + energy +
-                ", operational=" + operational +
-                ", failures=" + failures +
-                '}';
+    public boolean hasCapacity() {
+        return true;
+    }
+
+    @Override
+    public int getCurrentOccupancy() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxCapacity() {
+        return 0;
+    }
+
+    @Override
+    public void enter(Tourist tourist) {
+    }
+
+    @Override
+    public void exit(Tourist tourist) {
     }
 }

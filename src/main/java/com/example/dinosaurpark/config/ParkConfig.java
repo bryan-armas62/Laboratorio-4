@@ -1,25 +1,48 @@
 package com.example.dinosaurpark.config;
 
+import java.io.InputStream;
+import java.util.Properties;
+
 public final class ParkConfig {
 
     private static ParkConfig instance;
     private final Properties props;
 
-    // Constructor PRIVADO — nadie puede hacer "new ParkConfig()"
     private ParkConfig() {
-        // Carga park.properties con getClass().getClassLoader().getResourceAsStream()
+        props = new Properties();
+
+        try (InputStream input = getClass()
+                .getClassLoader()
+                .getResourceAsStream("park.properties")) {
+
+            props.load(input);
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    // Punto de acceso global — crea la instancia solo si no existe
-    public static ParkConfig getInstance() { ... }
+    public static synchronized ParkConfig getInstance() {
+        if (instance == null) {
+            instance = new ParkConfig();
+        }
 
-    // Métodos de lectura
-    public int    getInt   (String key, int defaultValue)    { ... }
-    public double getDouble(String key, double defaultValue) { ... }
-    public String getString(String key, String defaultValue) { ... }
-    public long   getSeed  () { ... }  // lee simulation.seed
-    public int    getTotalSteps() { ... }
+        return instance;
+    }
 
-    // Solo para tests — permite resetear la instancia entre tests
-    static void resetForTesting() { instance = null; }
+    public int getInt(String key, int defaultValue) {
+        return Integer.parseInt(props.getProperty(key, String.valueOf(defaultValue)));
+    }
+
+    public double getDouble(String key, double defaultValue) {
+        return Double.parseDouble(props.getProperty(key, String.valueOf(defaultValue)));
+    }
+
+    public String getString(String key, String defaultValue) {
+        return props.getProperty(key, defaultValue);
+    }
+
+    public static void resetForTesting() {
+        instance = null;
+    }
 }

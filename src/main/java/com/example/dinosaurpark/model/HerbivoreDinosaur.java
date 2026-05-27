@@ -3,7 +3,12 @@ package com.example.dinosaurpark.model;
 public class HerbivoreDinosaur extends Dinosaur {
 
     public HerbivoreDinosaur(int id, String name, String species) {
-        super(id, name, species);
+        super(id, name, species, 200);
+    }
+
+    @Override
+    public String getDiet() {
+        return "HERBIVORE";
     }
 
     @Override

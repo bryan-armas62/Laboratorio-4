@@ -4,22 +4,22 @@ import com.example.dinosaurpark.simulation.ParkState;
 
 import java.util.Random;
 
-public class BlackoutEvent implements SimulationEvent {
+public class DealsHourEvent implements SimulationEvent {
 
     private final double probability;
 
-    public BlackoutEvent(double probability) {
+    public DealsHourEvent(double probability) {
         this.probability = probability;
     }
 
     @Override
     public String getName() {
-        return "APAGON";
+        return "DEALS_HOUR";
     }
 
     @Override
     public String getDescription() {
-        return "Massive blackout";
+        return "Discounts activated";
     }
 
     @Override
@@ -30,9 +30,7 @@ public class BlackoutEvent implements SimulationEvent {
     @Override
     public void execute(ParkState state, Random rng) {
 
-        state.getPowerPlant().triggerFailure(
-                state.getDatabaseService()
-        );
+        state.setDiscountActive(true);
 
         state.getDatabaseService().saveEvent(
                 getName(),

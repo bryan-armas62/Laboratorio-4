@@ -1,30 +1,48 @@
+// ParkMonitor.java
 package com.example.dinosaurpark.monitoring;
 
+import com.example.dinosaurpark.model.DinosaurStatus;
+import com.example.dinosaurpark.model.TouristStatus;
+import com.example.dinosaurpark.model.VehicleStatus;
 import com.example.dinosaurpark.simulation.ParkState;
 
-import java.util.List;
-
 public class ParkMonitor {
-    
-    private ParkMonitor() {}
 
-    public static void displaySnapshot(ParkState state) {
-        long activeTourists = state.countActiveTourists();
-        long dinosaursInEnclosure = state.countDinosaursInEnclosure();
-        double energy = state.getPowerPlant().getEnergyLevel();
-        List<String> activeEvents = state.getActiveEventNames();
-        long vehiclesUnavailable = state.countVehiclesInUse();
+    public void printStatus(ParkState state, int step) {
 
-        System.out.println("-----------------------------------------------------");
-        System.out.printf("|  MONITOR - Step %-31d  |%n", state.getCurrentStep());
-        System.out.println("-----------------------------------------------------");
-        System.out.printf("|  1. Turistas activos:        %-19d|%n", activeTourists);
-        System.out.printf("|  2. Dinosuarios en encierro: %-19d|%n", dinosaursInEnclosure);
-        System.out.printf("|  3. Energia disponible:      %-18s  ||%n",
-            String.format("%.1f%%", energy));
-        System.out.printf("|  4. Eventos activos:         %-19s|%n",
-            activeEvents.isEmpty() ? "Ninguno" : String.join(", ", activeEvents));
-        System.out.printf("|  5. Vehiculos no disponibles:%-19d|%n", vehiclesUnavailable);
-        System.out.println("-----------------------------------------------------");
+        long escapedDinosaurs = state.getDinosaurs()
+                .stream()
+                .filter(d -> d.getStatus() == DinosaurStatus.ESCAPED)
+                .count();
+
+        long attackedTourists = state.getTourists()
+                .stream()
+                .filter(t -> t.getStatus() == TouristStatus.ATTACKED)
+                .count();
+
+        long brokenVehicles = state.getVehicles()
+                .stream()
+                .filter(v -> v.getStatus() == VehicleStatus.BROKEN)
+                .count();
+
+        System.out.println("====================================");
+        System.out.println("SIMULATION STEP: " + step);
+        System.out.println("====================================");
+
+        System.out.println("Tourists: " + state.getTourists().size());
+        System.out.println("Dinosaurs: " + state.getDinosaurs().size());
+        System.out.println("Vehicles: " + state.getVehicles().size());
+
+        System.out.println("Escaped Dinosaurs: " + escapedDinosaurs);
+        System.out.println("Attacked Tourists: " + attackedTourists);
+        System.out.println("Broken Vehicles: " + brokenVehicles);
+
+        System.out.println("Power Plant Operational: "
+                + state.getPowerPlant().isOperational());
+
+        System.out.println("Discount Active: "
+                + state.isDiscountActive());
+
+        System.out.println("====================================");
     }
 }
